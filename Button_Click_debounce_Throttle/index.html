@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Press the Buttons</title>
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+</head>
+<body>
+    <main class="container" style="position: absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
+        <progress id="p1"></progress>
+        <div class="grid">
+            <button data-target="modal-status" onclick="funDebounce(this)">Press to Debounce</button>
+            <button data-target="modal-status" onclick="funThrottle(this)">Press to Throttle</button>
+        </div>
+        <progress id="p2"></progress>
+    </main>
+    <dialog id="modal-status">
+        <article>
+            Init
+        </article>
+    </dialog>
+</body>
+<script>
+    let dClicks = 0;
+    let tClicks = 0;
+    let dTimeout = 400;
+    let tTimeout = 800;
+    let dSetTimeOut;
+    let dSetInterval;
+    let tSetTimeOut;
+    let tSetInterval;
+    let tThrottleTime = 400;
+    let throttle_progress = 0;
+
+    function funModalOpen(e,text){
+        let target = e.getAttribute("data-target");
+        let stringTarget = "'"+target+"'";
+        let tModal = document.querySelector(`[id="${target}"]`);
+        tModal.setAttribute("open","");
+        tModal.innerHTML = `<article>
+            ${text}
+            <footer>
+                <a href="#" role="button" class="secondary" onClick="funModalClose(${stringTarget})">Close</a>
+            </footer>
+            </article>`;
+    }
+
+    function funModalClose(target){
+        let tModal = document.querySelector(`[id="${target}"]`);
+        tModal.removeAttribute("open");
+        dClicks = 0;
+        tClicks = 0;
+        funResetProgress();
+    }
+
+    function funStartProgressD(){
+        let current_progress = dTimeout;
+        $("progress").attr("max",dTimeout);
+        dSetInterval = setInterval(() => {
+            current_progress -= 10;
+            $("progress").attr("value",current_progress);
+            if(current_progress < 1){
+                $("progress").attr("value",0);
+                clearInterval(dSetInterval);
+            }
+        }, 10);
+    }
+
+    function funStartProgressT(){
+        let current_progress = tTimeout;
+        throttle_progress = tThrottleTime;
+        $("#p1").attr("max",tTimeout);
+        $("#p2").attr("max",tThrottleTime);
+        tSetInterval = setInterval(() => {
+            current_progress -= 10;
+            throttle_progress -= 10;
+            $("#p1").attr("value",current_progress);
+            $("#p2").attr("value",throttle_progress);
+            if(current_progress < 1){
+                // $("progress").attr("value",0);
+                clearInterval(tSetInterval);
+            }
+        }, 10);
+    }
+
+    function funResetProgress(){
+        $("progress").attr("max",1);
+        $("progress").removeAttr("value");
+    }
+
+    function funDecideES(number){
+        if(number!=1){return "es";}
+        else{return "";}
+    }
+
+    function funDebounce(e){
+        dClicks++;
+        if(dSetTimeOut){
+            clearTimeout(dSetTimeOut);
+            clearInterval(dSetInterval);
+        }
+        funStartProgressD();
+        dSetTimeOut = setTimeout(() => {
+            funModalOpen(e,`Debounced ${dClicks} button press${funDecideES(dClicks)}`);
+        }, dTimeout);
+    }
+
+    function funThrottle(e){
+        if(throttle_progress<1){
+            tClicks++;
+            if(tSetTimeOut){
+                clearTimeout(tSetTimeOut);
+                clearInterval(tSetInterval);
+            }
+            funStartProgressT();
+            tSetTimeOut = setTimeout(() => {
+                funModalOpen(e,`Throttled ${tClicks} button press${funDecideES(tClicks)}`);
+            }, tTimeout);
+        }
+    }
+</script>
+</html>
