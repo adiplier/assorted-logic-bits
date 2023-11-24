@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full utilization calculator</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+</head>
+<body>
+    <main class="container" style="position: absolute;top: 50%;left:50%;transform: translate(-50%, -50%);">
+        <label for="inBal">Balance in your Account ($)</label>
+        <input id="inBal" type="number" value="1">
+        <label for="inRate">Cost of 1 cycle ($)</label>
+        <input id="inRate" type="number" value="1.75">
+        <label for="inRefill">Minimum amount to refill ($)</label>
+        <input id="inRefill" type="number" value="5">
+        <button onclick="funCalc()">Calculate</button>
+        <span id="result" style="display:flex;justify-content: center;">.</span>
+    </main>
+    <img style="position: absolute; bottom: -2%;right: -1.5%;border-radius: 50%; z-index: -1;height: 20%;width: auto;opacity: 50%;" src="https://play-lh.googleusercontent.com/OdpHJdf4F5yyYgF3P93u91jTdhy18By4rnhcf4kxL1r3KnSWSPySLJ-UST6WvLSE5zU" alt="CSC PAY logo">
+</body>
+<script>
+    const strRes = "You need to refill "
+    const result = document.getElementById("result")
+    
+    function funCalc(){
+        let bal = parseFloat(document.getElementById("inBal").value);
+        let rate = parseFloat(document.getElementById("inRate").value);
+        let refill = parseFloat(document.getElementById("inRefill").value);
+        let resVal = Math.ceil((bal + refill)/rate)
+        resVal *= rate
+        resVal -= bal
+        result.innerHTML = strRes + resVal + "$"
+    }
+    funCalc()
+</script>
+</html>
