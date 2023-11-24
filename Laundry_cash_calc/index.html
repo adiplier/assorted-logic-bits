@@ -21,7 +21,7 @@
     <img style="position: absolute; bottom: -2%;right: -1.5%;border-radius: 50%; z-index: -1;height: 20%;width: auto;opacity: 50%;" src="https://play-lh.googleusercontent.com/OdpHJdf4F5yyYgF3P93u91jTdhy18By4rnhcf4kxL1r3KnSWSPySLJ-UST6WvLSE5zU" alt="CSC PAY logo">
 </body>
 <script>
-    const strRes = "You need to refill "
+    const strRes = "You need to refill $"
     const result = document.getElementById("result")
     
     function funCalc(){
@@ -31,7 +31,7 @@
         let resVal = Math.ceil((bal + refill)/rate)
         resVal *= rate
         resVal -= bal
-        result.innerHTML = strRes + resVal + "$"
+        result.innerHTML = strRes + + resVal
     }
     funCalc()
 </script>
